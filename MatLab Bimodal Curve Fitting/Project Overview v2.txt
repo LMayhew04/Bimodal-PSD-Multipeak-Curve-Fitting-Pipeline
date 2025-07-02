@@ -1,0 +1,157 @@
+
+=======================
+Particle Size Model - Project Overview & Instructions
+=======================
+
+Author: [Your Name]
+Created with Assistance by: Matlab Help (ChatGPT-based Assistant)
+Date: [Insert Date]
+
+-----------------------
+📌 PROJECT PURPOSE
+-----------------------
+
+This MATLAB project is designed to automatically analyze particle size distributions (typically from Excel spreadsheets), fit statistical models (combinations of Normal and Lognormal distributions), and output:
+
+- PDF (Probability Density Function) plots
+- CDF (Cumulative Distribution Function) plots
+- Residual plots (difference between data and model)
+- Peak positions of component distributions
+- BIC (Bayesian Information Criterion), RMSE (Root Mean Square Error), and MaxResidual metrics
+
+The goal is to produce clean, accurate visualizations of particle size data and determine which model fits the data best.
+
+-----------------------
+🔧 CORE FUNCTIONALITY
+-----------------------
+
+1. **runAllFits.m**
+   - Main pipeline script.
+   - Loops through all `.xlsx` files in the `Data/` folder.
+   - Fits each sheet’s data using the best model determined by BIC.
+   - Saves plots and writes a summary CSV.
+
+2. **fitBestModel.m**
+   - Tests several combinations of Normal + Lognormal distributions.
+   - Optionally fits with 1–3 lognormal components.
+   - Evaluates BIC, RMSE, and selects best model.
+   - Implements bounds, normalization, and adaptive refinement.
+
+3. **plotFit.m**
+   - Generates 3-panel visualizations: PDF, CDF, Residuals.
+   - Dynamically clamps x-axis to remove empty regions.
+   - Includes annotation of peak positions and fit quality metrics.
+
+4. **loadParticleData.m**
+   - Reads and standardizes Excel data.
+   - Supports header skipping, flexible column matching by name or index.
+
+5. **pdfHelpers/**
+   - Folder containing Normal and Lognormal distribution PDF implementations.
+
+-----------------------
+📂 EXPECTED FILE STRUCTURE
+-----------------------
+
+```
+ProjectFolder/
+├── Data/                       # Contains all .xlsx datasets
+│   └── SampleData.xlsx         # Raw input files (no ~$ lock files!)
+├── Figures/                    # Output plots saved here
+├── Fit_Summary.csv             # Summary of fit results
+├── runAllFits.m
+├── fitBestModel.m
+├── plotFit.m
+├── loadParticleData.m
+├── pdfHelpers/
+│   ├── lognPDF.m
+│   └── normalPDF.m
+└── README.txt (this file)
+```
+
+-----------------------
+🔁 PROJECT HISTORY
+-----------------------
+
+**Initial Goal**: Fit a simple Normal + Lognormal model to particle size data.
+
+### Stage 1 - v1
+- Used 2-component models.
+- Lognormal + Normal.
+- Performed well on some datasets but missed small peaks.
+
+### Stage 2 - v2
+- Introduced 3-component fitting.
+- Added auto model comparison using BIC.
+- Adaptive grid implemented.
+- Improvements in residuals and peak detection, but plot range issues appeared.
+
+### Stage 3 - Constraints & Refinements
+- Introduced:
+  ✅ Peak constraints using bounds
+  ✅ Mandatory fine component to catch small peaks
+  ✅ PDF normalization and clamping
+  ✅ Adaptive model selection
+
+### Stage 4 - Plot Range Fix
+- Fixed issue where x-axis would extend to 500+ µm even if data stopped at 50 µm.
+- Added dynamic x-axis cutoff at last meaningful diameter.
+
+### Stage 5 - Final Polish
+- Filtering out temporary Excel lock files (~$ prefix).
+- Repackaged all files.
+- Re-ran tests and confirmed BIC/log-likelihood optimization works consistently.
+
+-----------------------
+📊 MODEL SELECTION CRITERIA
+-----------------------
+
+Each model is evaluated using:
+- BIC (lower = better)
+- RMSE (lower = better)
+- MaxResidual (lower = better)
+- Visual alignment with peaks
+
+-----------------------
+⚠️ COMMON PITFALLS
+-----------------------
+
+- **Temporary Excel Files**: Don’t include files like `~$filename.xlsx`.
+- **Wrong Column Indexing**: Ensure column numbers or headers are accurate in loadParticleData.m.
+- **MATLAB License**: If fmincon (constrained fitting) is used, it requires Optimization Toolbox. The project now includes fallback logic.
+
+-----------------------
+📝 HOW TO USE
+-----------------------
+
+1. Place Excel files in the `Data/` folder.
+2. Configure column headers or indices in `loadParticleData.m`.
+3. Run:
+   ```matlab
+   runAllFits
+   ```
+4. Results appear in:
+   - `Figures/` folder
+   - `Fit_Summary.csv` file
+
+-----------------------
+📈 INTERPRETATION
+-----------------------
+
+Use the plots to validate:
+- Visual agreement between the dashed red line (data) and solid black line (model).
+- Residuals centered around zero.
+- Peak annotations match expected modes.
+
+-----------------------
+✅ CURRENT STATUS
+-----------------------
+
+- All models running
+- x-axis clamped properly
+- Plots auto-labeled and saved
+- Results accurate and reliable
+
+You can now confidently use this tool for automated particle size distribution fitting across a wide range of datasets.
+
+-----------------------

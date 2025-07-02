@@ -1,0 +1,16 @@
+# TROUBLESHOOTING & FAQ
+
+**Q: The axis on my plots goes out to 500 μm, but my data only goes to ~50 μm. What’s wrong?**  
+A: The pipeline now auto-limits the x-axis to just above the data max. If you see this, check for NaNs or malformed data in your input file.
+
+**Q: The fit is missing a subtle peak/shoulder visible in my histogram.**  
+A: The improved model always tries a 3-component fit and checks for subtle peaks. If this still occurs, try increasing the MinProminence in fitBestModel.m.
+
+**Q: I get errors about “empty or malformed sheet.”**  
+A: The script skips sheets without clear “diameter” and “distribution” columns, or sheets that are empty. Check your Excel file format and headers.
+
+**Q: Can I select only specific sheets?**  
+A: Yes! Edit the `sheetMode` setting at the top of runAllFits.m to list only the sheet(s) you want.
+
+**Q: My summary table is empty.**  
+A: Ensure you have data in the correct format and that the Data/ folder contains your .xlsx file.

@@ -1,0 +1,17 @@
+# CHANGELOG
+
+## [Final Improved Version]
+- Adds explicit visual and automated detection for minor/shoulder peaks (fixes previous subtle peak miss).
+- Pipeline always fits both 2- and 3-component models; peak count and fit structure validated.
+- Uses MATLAB toolboxes for model selection and diagnostics.
+- Axis now always limited to 105% of data max (never extends to 300+ μm unless data supports it).
+- All user settings centralized at top of runAllFits.m.
+- Sheet/column selection made simple and robust.
+- All scripts are now beginner-readable, with clear comments and usage notes.
+- README includes a Quick Start Guide.
+- Example output PNGs included.
+- Troubleshooting/FAQ section added.
+
+## [Previous: v4]
+- Initial multi-component model selection by BIC.
+- Visual fit, but subtle peaks could still be missed.

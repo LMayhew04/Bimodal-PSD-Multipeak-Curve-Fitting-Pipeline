@@ -1,0 +1,76 @@
+Particle‑Size Modelling Pipeline — Project Overview
+===================================================
+
+Created for .....: Logan Mayhew, US Conec (2025)
+Compiled by .....: ChatGPT (conversation summary)
+MATLAB version ..: R2016a+ (no toolboxes required)
+
+
+0. PURPOSE
+----------
+Automate curve‑fitting for hundreds of Excel PSD worksheets from a PPS
+composite (≈70 % glass beads with fine & coarse modes).  For every sheet
+the code must import, fit several candidate mixtures, pick the best by
+BIC, output a diagnostic PNG and log results in a CSV.
+
+
+1. FOLDER STRUCTURE (current)
+-----------------------------
+ParticleSize_Model/
+│
+├─ Data/            ← Excel input
+├─ Figures/         ← PNG output
+├─ pdfHelpers/      ← analytic PDF helpers
+│
+├─ runAllFits.m     ← driver (Sheet‑2‑only  or  all‑except‑first)
+├─ loadParticleData.m
+├─ fitBestModel.m
+└─ plotFit.m
+
+
+2. FILE ROLES
+-------------
+runAllFits      master loop; assembles Fit_Summary.csv
+loadParticleData
+                import, clean, **normalise area to 1**
+fitBestModel    multi‑start fminsearch, w = 1/√x, candidates:
+                  • Norm+Logn
+                  • Norm+Norm
+                  • Norm+Logn+Logn  (optional shoulder)
+                returns model struct + BIC
+plotFit         3‑panel figure
+pdfHelpers/*    normalPDF, lognPDF, raylPDF
+
+
+3. ITERATIONS & FINDINGS
+------------------------
+A  (unweighted) – fine bump missed; residual ±0.25  
+B  (w = 1/x, force area=1) – bump matched, coarse tail lost  
+C  (current: w = 1/√x, free gains, 3‑comp opt.) – bump + tail fit;
+   residual ±0.02; BIC ≈ –2500 vs –1200 before.
+
+
+4. HOW TO RUN
+-------------
+cd('.../ParticleSize_Model')
+runAllFits        % toggle Section flags inside file
+
+Outputs overwrite existing PNGs & Fit_Summary.csv.
+
+
+5. INTERPRETING OUTPUT
+----------------------
+Residual panel: aim for ±0.02 flat band.  
+BIC: compare within one sheet; ΔBIC > 10 ⇒ strong preference.
+
+
+6. TODO / IMPROVEMENTS
+----------------------
+□ Tune weight exponent α.  
+□ Optional Logn+Logn candidate.  
+□ Bootstrap confidence intervals.  
+□ Timestamped outputs for versioning.  
+□ Global optimiser only if local minima persist.
+
+
+End of overview.
