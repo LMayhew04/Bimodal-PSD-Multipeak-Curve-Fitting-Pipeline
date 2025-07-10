@@ -1,0 +1,82 @@
+README – Particle Size Modelling
+(Overview, Customizing Column Selection, Customizing Fitting Method, Output Contents)
+================================
+
+Overview:
+---------
+This MATLAB pipeline fits 2- or 3-peak models to particle size distribution data
+in Excel spreadsheets and outputs diagnostic plots and a summary CSV.
+
+Default Expectation:
+--------------------
+Each spreadsheet must contain TWO numeric columns:
+
+1. Particle diameter values (e.g., µm)
+2. Particle size distribution values (PDF shape, frequency, or relative size)
+
+By default, the script looks for columns named:
+    'ParticleDiameter', 'SizeDistribution1'
+
+If these names are found, the script will use them automatically.
+
+============================================================================
+
+Customizing Column Names:
+-------------------------
+If your spreadsheet uses different column headers, update this in `runAllFits.m`:
+
+    customNames = {'YourDiameterHeader', 'YourDistributionHeader'};
+
+Example:
+If your Excel sheet looks like this:
+
+    | Size (µm) | Normalized PDF |
+    |-----------|----------------|
+    | 2.5       | 0.012          |
+    | 3.0       | 0.021          |
+
+Then use:
+    customNames = {'Size (µm)', 'Normalized PDF'};
+
+============================================================================
+
+Alternative: Column Index Method
+-----------------------------
+If your sheet does NOT use clear names or has no headers,
+you can use column numbers instead in `loadParticleData.m`:
+
+Example:
+    loadParticleData(fileName, 'DiameterIdx', 3, 'DistIdx', 5)
+
+- 'DiameterIdx', 3 — use the 3rd column for diameter
+- 'DistIdx', 5     — use the 5th column for size distribution
+
+Default Index Values in the Script:
+    DiameterIdx = 6
+    DistIdx     = 8
+
+That means by default, the script looks in column 6 and column 8.
+
+Adjust these numbers to match your Excel file’s layout.
+
+============================================================================
+
+Fitting Options:
+----------------
+Inside `runAllFits.m`, you can control:
+
+- Which sheet to use:
+    sheetToUse = 2;  (0 for all sheets except the first; 'all' for all sheets; or an array, e.g. [2 4], for multiple specific sheets)
+
+- Whether to fit a 3rd peak:
+    useThreeComponent = true;
+
+- How to weight the data:
+    weightExponent = 0.5;   (in w = 1 / x^alpha)
+
+============================================================================
+
+Output:
+-------
+- PNG plots → saved to `/Figures/`
+- Summary CSV → saved as `Fit_Summary.csv`
